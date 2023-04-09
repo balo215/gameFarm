@@ -78,7 +78,7 @@ public class sInventorySlot : MonoBehaviour
 		ClearSlot();
 		quantityText.text = "";
 	}
-	private void useButtonClick(){
+	public void useButtonClick(){
 		if(currentItem != null){
 			Item.Use();
 			if(currentItem.DOU){
