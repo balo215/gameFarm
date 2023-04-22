@@ -32,6 +32,17 @@ public class item : MonoBehaviour
     	this.itemData = itemData;
     }
 
+    public void SetItemObj(ItemData itemData){
+    	this.itemData = itemData;
+    	this.icon = itemData.icon;
+    	this.itemName = itemData.itemName;
+    	this.description = itemData.description;
+    	this.itemPrefab = itemData.itemPrefab;
+    }
+    public item GetItem(){
+    	return this;
+    }
+
     public string GetItemName()
     {
         return itemName;
@@ -58,7 +69,7 @@ public class item : MonoBehaviour
     	// other initialization code for the item object based on the itemData
 	}
 
-	public void Use(){
+	/*public void Use(){
 		switch(itemData.itemType){
 			case ItemData.ItemType.hoe:
 				Debug.Log("using hoe");
@@ -67,6 +78,6 @@ public class item : MonoBehaviour
 				Debug.Log("using seed");
 				break;
 		}
-	}
+	}*/
 
 }

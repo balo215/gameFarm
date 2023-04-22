@@ -7,7 +7,7 @@ public class Character : MonoBehaviour
 	public float moveSpeed = 5f;
     public GameObject itemPrefab;
     public GameObject inventoryPanel;
-    public SmallInventory smallInventory;
+    public InventoryManager inventoryManager;
     public Transform characterTransform;
 
     private bool isInventoryOpen = false;
@@ -39,7 +39,7 @@ public class Character : MonoBehaviour
     	}
         item item = collision.gameObject.GetComponent<item>();
         if (item != null){
-            bool added = smallInventory.AddItem(item.GetItemData(), item);
+            bool added = inventoryManager.AddItem(item.GetItemData(), item);
             if(added == true){
                 Destroy(collision.gameObject);
             }

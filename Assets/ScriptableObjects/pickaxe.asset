@@ -18,5 +18,6 @@ MonoBehaviour:
   sellPrice: 10
   itemPrefab: {fileID: 3063881924102838226, guid: ebdf5ec5a0afd90489cecd5327302cf4,
     type: 3}
-  itemType: 0
+  itemType: 3
   stackable: 0
+  DOU: 0

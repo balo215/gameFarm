@@ -15,6 +15,7 @@ public class ItemData : ScriptableObject
     public enum ItemType{
     	hoe,
     	seed,
-    	food
+    	food,
+    	pickaxe
     }
 }
