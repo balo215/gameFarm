@@ -6,6 +6,9 @@ TagManager:
   tags:
   - item
   - itemImage
+  - InventorySlot
+  - SmallInventorySlot
+  - Chest
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - 
   - Obstacle
   - character
-  - 
+  - Chest
   - 
   - 
   - 

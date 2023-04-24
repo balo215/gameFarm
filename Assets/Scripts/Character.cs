@@ -9,6 +9,7 @@ public class Character : MonoBehaviour
     public GameObject inventoryPanel;
     public InventoryManager inventoryManager;
     public Transform characterTransform;
+    private int layerMask;
 
     private bool isInventoryOpen = false;
     // Start is called before the first frame update
@@ -16,6 +17,8 @@ public class Character : MonoBehaviour
     {
         //SpawnItem();
         characterTransform = transform;
+        int characterLayer = LayerMask.NameToLayer("character"); // Replace "Character" with the name of your character's layer
+        layerMask = ~(1 << characterLayer); 
     }
 
     // Update is called once per frame
@@ -30,16 +33,33 @@ public class Character : MonoBehaviour
             inventoryPanel.SetActive(isInventoryOpen);
             Time.timeScale = isInventoryOpen ? 0f : 1f;
         }
+        if(Input.GetKeyDown("e")){
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 2f, layerMask);
+            if (hit.collider != null){
+
+                Debug.Log(hit.collider);
+                // Check if the raycast hit the chest object
+                if (hit.collider.CompareTag("Chest"))
+                {
+                    // Trigger "open chest" function
+                    Debug.Log("opening chest");
+                }
+            }
+        }
+        Debug.DrawRay(transform.position, transform.right * 2f, Color.red);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
 	{
-    	if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle")){
+    	if(collision.gameObject.layer == LayerMask.NameToLayer("Obstacle")){
         	Debug.Log("collision");
     	}
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Chest")){
+            Debug.Log("collision with a Chest");
+        }
         item item = collision.gameObject.GetComponent<item>();
         if (item != null){
-            bool added = inventoryManager.AddItem(item.GetItemData(), item);
+            bool added = inventoryManager.AddItemToInv(item.GetItemData(), item);
             if(added == true){
                 Destroy(collision.gameObject);
             }
