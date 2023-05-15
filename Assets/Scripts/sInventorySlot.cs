@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-
 public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     public Image itemIcon;
     public item Item;
     public ItemData currentItem;
     public Button dropButton;
-    public Button useButton;
+    //public Button toChest;
     public Text quantityText;
     public bool usable;
     public int quantity;
@@ -20,8 +19,10 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
 	public Character character;
 	public GameObject pausedBackground;
+    public GameObject toChestBtn;
 
-	public static GameObject itemBeingDragged;
+
+    public static GameObject itemBeingDragged;
     public GameObject duplicateItem;
     private CanvasGroup canvasGroup;
 
@@ -30,13 +31,14 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
    
     private void Start(){
     	dropButton.onClick.AddListener(dropButtonClick);
-    	useButton.onClick.AddListener(useButtonClick);
+    	toChestBtn.GetComponent<Button>().onClick.AddListener(toChestButtonClick);
     	itemIcon.sprite = null;
     	itemIcon.enabled = false;
     	dropButton.gameObject.SetActive(false);
     	quantityText.text = "";
     	usable = true;
     	canvasGroup = GetComponent<CanvasGroup>();
+    	toChestBtn.SetActive(false);
 
     }
 	
@@ -215,9 +217,10 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 		quantityText.text = "";
 	}
 
+    /*
 	public void useButtonClick(){
-		//Debug.Log(currentItem);
-		if(!pausedBackground.activeSelf ){
+        //Debug.Log(pausedBackground.activeSelf);
+        if (!pausedBackground.activeSelf ){
 			if(currentItem != null){
 				//Debug.Log(currentItem);
 				ItemBehaviorManager.Use(currentItem);
@@ -232,25 +235,68 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 			}
 		}
 	}
-/*
-	public void DropIntoSlot(ItemData itemToAdd, int quantityOrigin){
-    	//Debug.Log(newItem.itemData);
-    	if (itemToAdd == null){
-        	itemIcon.sprite = null;
-        	itemIcon.enabled = false;
-        	currentItem = null;
-			//dropButton.gameObject.SetActive(false);
-        	return;
-    	}
-    	itemIcon.sprite = itemToAdd.icon;
-    	itemIcon.enabled = true;
-    	currentItem = itemToAdd;
-    	//dropButton.gameObject.SetActive(true);
-    	quantity = quantityOrigin;
-    	quantityText.text = quantity.ToString();
-	}*/
+    */
+    public void useButtonKey()
+    {
+        //Debug.Log(pausedBackground.activeSelf);
+        if (!pausedBackground.activeSelf)
+        {
+            if (currentItem != null)
+            {
+                //Debug.Log(currentItem);
+                ItemBehaviorManager.Use(currentItem);
+                if (currentItem.DOU)
+                {
+                    if (quantity == 1)
+                    {
+                        ClearSlot();
+                    }
+                    else
+                    {
+                        quantity--;
+                        quantityText.text = quantity.ToString();
+                    }
+                }
+            }
+        }
+    }
 
-	private IEnumerator OnDropCoroutine(){
+    public void showChestBtn(){
+    	if(currentItem != null){
+    		toChestBtn.SetActive(true);
+    	}
+    }
+
+    public void hiddeChestBtn(){
+    	if(currentItem != null){
+    		toChestBtn.SetActive(false);
+    	}
+    }
+
+	private void toChestButtonClick(){
+		Debug.Log(currentItem);
+	}
+    /*
+        public void DropIntoSlot(ItemData itemToAdd, int quantityOrigin){
+            //Debug.Log(newItem.itemData);
+            if (itemToAdd == null){
+                itemIcon.sprite = null;
+                itemIcon.enabled = false;
+                currentItem = null;
+                //dropButton.gameObject.SetActive(false);
+                return;
+            }
+            itemIcon.sprite = itemToAdd.icon;
+            itemIcon.enabled = true;
+            currentItem = itemToAdd;
+            //dropButton.gameObject.SetActive(true);
+            quantity = quantityOrigin;
+            quantityText.text = quantity.ToString();
+        }*/
+
+   
+
+    private IEnumerator OnDropCoroutine(){
     	yield return new WaitForSeconds(1f); // Add a delay of 0.5 seconds (adjust as needed)
 	}
 }

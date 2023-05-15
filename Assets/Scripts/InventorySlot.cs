@@ -17,6 +17,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public ItemData currentItem;
     private CanvasGroup canvasGroup;
     public Transform parentBeforeDrag;
+    public GameObject toChestBtn;
 
 
     // Start is called before the first frame update
@@ -26,6 +27,9 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	itemIcon.enabled = false;
     	quantityText.text = "";
     	canvasGroup = GetComponent<CanvasGroup>();
+        toChestBtn.SetActive(false);
+        toChestBtn.GetComponent<Button>().onClick.AddListener(toChestButtonClick);
+
     }
 
     // Update is called once per frame
@@ -207,6 +211,22 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
     	slotToEmpty.quantity = 0;
+    }
+
+    public void showChestBtn(){
+        if(currentItem != null){
+            toChestBtn.SetActive(true);
+        }
+    }
+
+    public void hiddeChestBtn(){
+        if(currentItem != null){
+            toChestBtn.SetActive(false);
+        }
+    }
+
+    private void toChestButtonClick(){
+        Debug.Log(currentItem);
     }
 
 }

@@ -8,10 +8,28 @@ public class InventoryManager : MonoBehaviour
 	public List<sInventorySlot> slots;
     public List<InventorySlot> iSlots;
     public GameObject inventoryPanel;
+    public bool isInventoryOpen = false;
+    public bool isChestOpen = false;
+
 
     void Start()
     {
     	inventoryPanel.SetActive(false);
+    }
+
+    void Update(){
+        if(isChestOpen == true){
+            foreach (sInventorySlot slot in slots){
+                slot.showChestBtn();
+            }
+            foreach (InventorySlot slot in iSlots){
+                slot.showChestBtn();
+            }
+        }else{
+            foreach (InventorySlot slot in iSlots){
+                slot.hiddeChestBtn();
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -111,4 +129,6 @@ public class InventoryManager : MonoBehaviour
         }
         return null;
     }
+
+
 }

@@ -7,7 +7,9 @@ public class SmallInventory : MonoBehaviour
 {
     public List<sInventorySlot> slots;
     public List<InventorySlot> iSlots;
-    
+    public GameObject pausedBackground;
+
+
     [SerializeField] private RectTransform shadowRect;
     private sInventorySlot selectedSlot;
 
@@ -35,9 +37,13 @@ public class SmallInventory : MonoBehaviour
                 shadowRect.anchoredPosition = firstSlotRect.anchoredPosition;
             }
         }
-        if(Input.GetKeyDown("space")){
-        	Debug.Log(selectedIndex);
-            slots[selectedIndex].useButtonClick();
+        if(Input.GetKeyDown("space") && !pausedBackground.activeSelf)
+        {
+            slots[selectedIndex].useButtonKey();
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            slots[selectedIndex].useButtonKey();
         }
     }
 }
