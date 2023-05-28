@@ -18,14 +18,16 @@ public class item : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.name = itemData.itemName;
-        GetComponent<SpriteRenderer>().sprite = itemData.icon;
-        itemName = itemData.itemName;
-        description = itemData.description;
-        itemValue = itemData.sellPrice;
-        icon = itemData.icon;
-        itemPrefab = itemData.itemPrefab;
-        stackable = itemData.stackable;
+        if(itemData != null){
+            gameObject.name = itemData.itemName;
+            GetComponent<SpriteRenderer>().sprite = itemData.icon;
+            itemName = itemData.itemName;
+            description = itemData.description;
+            itemValue = itemData.sellPrice;
+            icon = itemData.icon;
+            itemPrefab = itemData.itemPrefab;
+            stackable = itemData.stackable;
+        }
     }
 
     public item(ItemData itemData){

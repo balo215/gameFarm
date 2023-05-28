@@ -19,6 +19,7 @@ public class chestManager : MonoBehaviour
     {
         int chestLayer = LayerMask.NameToLayer("Chest"); // Replace "Character" with the name of your character's layer
         layerMask = ~(1 << chestLayer);
+        inventoryManager = FindObjectOfType<InventoryManager>();
         inventoryManager.isChestOpen = true;
     }
 

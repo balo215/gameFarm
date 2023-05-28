@@ -103,7 +103,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	        	newItemImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
 	        	this.itemIcon.enabled = true;
 	        	this.itemIcon.sprite = itemImage;
-	        	this.dropButton.gameObject.SetActive(true);
+	        	//this.dropButton.gameObject.SetActive(true);
 	        	this.currentItem = eventData.pointerDrag.GetComponent<sInventorySlot>().currentItem;
 	        	this.quantity = eventData.pointerDrag.GetComponent<sInventorySlot>().quantity;
 	        	this.quantityText.text = quantity.ToString();
@@ -128,7 +128,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	        	newItemImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
 	        	this.itemIcon.enabled = true;
 	        	this.itemIcon.sprite = itemImage;
-	        	this.dropButton.gameObject.SetActive(true);
+	        	//this.dropButton.gameObject.SetActive(true);
 	        	this.currentItem = eventData.pointerDrag.GetComponent<InventorySlot>().currentItem;
 	        	this.quantity = eventData.pointerDrag.GetComponent<InventorySlot>().quantity;
 	        	this.quantityText.text = quantity.ToString();
@@ -147,7 +147,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     	sInventorySlot slotToEmpty = slot.GetComponent<sInventorySlot>();
     	Transform slotTransform = slot.GetComponent<Transform>();
     	slotToEmpty.itemIcon.sprite = null;
-    	slotToEmpty.dropButton.gameObject.SetActive(false);
+    	//slotToEmpty.dropButton.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -169,7 +169,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         itemIcon.sprite = null;
         itemIcon.enabled = false;
         currentItem = null;
-        dropButton.gameObject.SetActive(false);
+        //dropButton.gameObject.SetActive(false);
         Item = null;
     	quantityText.text = "";
     	quantity = 0;
@@ -180,13 +180,13 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         	itemIcon.sprite = null;
         	itemIcon.enabled = false;
         	currentItem = null;
-			dropButton.gameObject.SetActive(false);
+			//dropButton.gameObject.SetActive(false);
         	return;
     	}
     	itemIcon.sprite = itemToAdd.icon;
     	itemIcon.enabled = true;
     	currentItem = itemToAdd;
-    	dropButton.gameObject.SetActive(true);
+    	//dropButton.gameObject.SetActive(true);
     	quantity = fullItem.quantity;
     	quantityText.text = quantity.ToString();
 	}
@@ -215,6 +215,8 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         newItem.SetItemData(currentItem);
 		ClearSlot();
 		quantityText.text = "";
+        dropButton.gameObject.SetActive(false);    
+
 	}
 
     /*
@@ -276,6 +278,16 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	private void toChestButtonClick(){
 		Debug.Log(currentItem);
 	}
+
+    public void showDropBtn(){
+        if(currentItem != null){
+            dropButton.gameObject.SetActive(true);
+        }
+    }
+
+    public void hideDropBtn(){
+        dropButton.gameObject.SetActive(false);    
+    }
     /*
         public void DropIntoSlot(ItemData itemToAdd, int quantityOrigin){
             //Debug.Log(newItem.itemData);

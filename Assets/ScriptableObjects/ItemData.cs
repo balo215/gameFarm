@@ -3,7 +3,7 @@
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject
 {
-    public new string itemName = "New Item";
+    public string itemName = "New Item";
     public string description = "Item description";
     public Sprite icon = null;
     public int sellPrice = 10;
@@ -16,6 +16,7 @@ public class ItemData : ScriptableObject
     	hoe,
     	seed,
     	food,
-    	pickaxe
+    	pickaxe,
+        chest
     }
 }

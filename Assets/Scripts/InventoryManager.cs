@@ -30,6 +30,16 @@ public class InventoryManager : MonoBehaviour
                 slot.hiddeChestBtn();
             }
         }
+        if(isInventoryOpen == true){
+            foreach(sInventorySlot slot in slots){
+                slot.showDropBtn();
+            }
+        }
+        if(isInventoryOpen == false){
+            foreach(sInventorySlot slot in slots){
+                slot.hideDropBtn();
+            }
+        }
     }
 
     // Start is called before the first frame update
