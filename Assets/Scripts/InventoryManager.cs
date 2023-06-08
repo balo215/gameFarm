@@ -2,22 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class InventoryManager : MonoBehaviour
+
+public class InventoryManager : MonoBehaviour, IPointerClickHandler
 {
 	public List<sInventorySlot> slots;
     public List<InventorySlot> iSlots;
     public GameObject inventoryPanel;
     public bool isInventoryOpen = false;
     public bool isChestOpen = false;
-
+// https://chat.openai.com/share/a14ba7f2-c3be-4e8c-ab86-bd0e39e7b10e
 
     void Start()
     {
     	inventoryPanel.SetActive(false);
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+    	    	Debug.Log(eventData);
+
+        if (eventData.button == PointerEventData.InputButton.Left && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+        {
+            GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
+
+            // Perform actions based on the clicked UI object while Shift key is pressed
+            Debug.Log("Shift + Clicked on UI: " + clickedObject.name);
+        }
+    }
+
     void Update(){
+
         if(isChestOpen == true){
             foreach (sInventorySlot slot in slots){
                 slot.showChestBtn();
@@ -27,6 +43,9 @@ public class InventoryManager : MonoBehaviour
             }
         }else{
             foreach (InventorySlot slot in iSlots){
+                slot.hiddeChestBtn();
+            }
+            foreach (sInventorySlot slot in slots){
                 slot.hiddeChestBtn();
             }
         }

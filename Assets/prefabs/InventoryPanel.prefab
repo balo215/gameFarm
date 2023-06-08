@@ -465,6 +465,7 @@ GameObject:
   - component: {fileID: 1985450759708222190}
   - component: {fileID: 609662017077291256}
   - component: {fileID: 6048518323253508471}
+  - component: {fileID: 8142929533552630569}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: InventorySlot
@@ -566,3 +567,14 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!210 &8142929533552630569
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8950724138429916865}
+  m_Enabled: 1
+  m_SortingLayerID: 877596941
+  m_SortingLayer: 1
+  m_SortingOrder: 1

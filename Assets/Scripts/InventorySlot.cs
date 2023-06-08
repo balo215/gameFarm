@@ -39,11 +39,12 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnBeginDrag(PointerEventData eventData){
-    	Debug.Log(currentItem);
     	if(currentItem != null){
 	    	canvasGroup.blocksRaycasts = false;
 	    	canvasGroup.alpha = .5f;
     		dragged = true;
+            eventData.pointerDrag.GetComponent<Transform>().parent.parent.parent.GetComponent<Canvas>().sortingOrder = 1;
+
 	    	parentBeforeDrag = eventData.pointerDrag.GetComponent<Transform>().parent;
 	    	indexSlot = eventData.pointerDrag.GetComponent<Transform>().GetSiblingIndex();
 	    	eventData.pointerDrag.GetComponent<Transform>().SetParent(eventData.pointerDrag.GetComponent<Transform>().parent.parent.parent);
@@ -58,7 +59,10 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData){
     	canvasGroup.blocksRaycasts = true;
     	canvasGroup.alpha = 1;
+
     	if(dragged == true){
+                        
+
     		eventData.pointerDrag.GetComponent<Transform>().SetParent(parentBeforeDrag);
     		eventData.pointerDrag.GetComponent<Transform>().SetSiblingIndex(indexSlot);
     		Image newItemImage = eventData.pointerDrag.GetComponent<InventorySlot>().itemIcon;
@@ -68,6 +72,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnDrop(PointerEventData eventData) {
+        eventData.pointerDrag.GetComponent<Transform>().parent.GetComponent<Canvas>().sortingOrder = 0;
     	//the next 2 if's are for drop a single item from the small inventory to the inventory and within the inventory, to a stack of stackable items
     	//this is NOT implemented on small inventory (from within and from inventory)
     	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -92,6 +97,16 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         	}
 		}
+        if(eventData.pointerDrag != null && this.IsEmpty() == false && eventData.pointerDrag.gameObject.CompareTag("chestSlot") ){
+            chestSlot invSlot = eventData.pointerDrag.GetComponent<chestSlot>();
+            if(invSlot.currentItem != null && invSlot.currentItem.itemName == this.currentItem.itemName && this.currentItem.stackable == true){             
+                this.quantity = this.quantity + invSlot.quantity;
+                this.quantityText.text = this.quantity.ToString();
+                ClearChestInventoryAfterDrag(eventData.pointerDrag);
+                invSlot.itemIcon.enabled = false;
+
+            }
+        }
 		//============================================= END OF 2 IFs =================================================== 
 
 
@@ -127,6 +142,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	        	this.itemIcon.enabled = true;
 	        	this.itemIcon.sprite = itemImage;
 	        	//this.dropButton.gameObject.SetActive(true);
+
 	        	this.currentItem = eventData.pointerDrag.GetComponent<sInventorySlot>().currentItem;
 	        	this.quantity = eventData.pointerDrag.GetComponent<sInventorySlot>().quantity;
 	        	this.quantityText.text = quantity.ToString();
@@ -136,7 +152,28 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	        	eventData.pointerDrag.GetComponent<Transform>().SetParent(eventData.pointerDrag.GetComponent<sInventorySlot>().parentBeforeDrag);
 	        	eventData.pointerDrag.GetComponent<Transform>().SetSiblingIndex(eventData.pointerDrag.GetComponent<sInventorySlot>().indexSlot);
 	        	ClearSmallInventoryAfterDrag(eventData.pointerDrag);
+
         	}
+        }else if(eventData.pointerDrag != null && this.IsEmpty() == true && eventData.pointerDrag.gameObject.CompareTag("chestSlot")){
+            if(eventData.pointerDrag.GetComponent<chestSlot>().currentItem != null){
+                eventData.pointerDrag.GetComponent<chestSlot>().dragged = false;
+                Sprite itemImage = eventData.pointerDrag.GetComponent<chestSlot>().itemIcon.sprite;
+                Image newItemImage = eventData.pointerDrag.GetComponent<chestSlot>().itemIcon;
+                newItemImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,0);
+                this.itemIcon.enabled = true;
+                this.itemIcon.sprite = itemImage;
+                //this.dropButton.gameObject.SetActive(true);
+
+                this.currentItem = eventData.pointerDrag.GetComponent<chestSlot>().currentItem;
+                this.quantity = eventData.pointerDrag.GetComponent<chestSlot>().quantity;
+                this.quantityText.text = quantity.ToString();
+
+                newItemImage.enabled = false;
+                
+                eventData.pointerDrag.GetComponent<Transform>().SetParent(eventData.pointerDrag.GetComponent<chestSlot>().parentBeforeDrag);
+                eventData.pointerDrag.GetComponent<Transform>().SetSiblingIndex(eventData.pointerDrag.GetComponent<chestSlot>().indexSlot);
+                ClearChestInventoryAfterDrag(eventData.pointerDrag);            
+            }
         }
         
     }
@@ -196,6 +233,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	Transform slotTransform = slot.GetComponent<Transform>();
     	slotToEmpty.itemIcon.sprite = null;
     	//slotToEmpty.dropButton.gameObject.SetActive(false);
+        slotToEmpty.toChestBtn.gameObject.SetActive(false);
+
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -207,10 +246,23 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	Transform slotTransform = slot.GetComponent<Transform>();
     	slotToEmpty.itemIcon.sprite = null;
     	slotToEmpty.dropButton.gameObject.SetActive(false);
+        slotToEmpty.toChestBtn.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
     	slotToEmpty.quantity = 0;
+    }
+
+    private void ClearChestInventoryAfterDrag(GameObject slot){
+        chestSlot slotToEmpty = slot.GetComponent<chestSlot>();
+        Transform slotTransform = slot.GetComponent<Transform>();
+        slotToEmpty.itemIcon.sprite = null;
+        
+        //slotToEmpty.toChestBtn.gameObject.SetActive(false);
+        slotToEmpty.currentItem = null;
+        //slotToEmpty.Item = null;
+        slotToEmpty.quantityText.text = "";
+        slotToEmpty.quantity = 0;
     }
 
     public void showChestBtn(){
@@ -220,9 +272,9 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void hiddeChestBtn(){
-        if(currentItem != null){
+        //if(currentItem != null){
             toChestBtn.SetActive(false);
-        }
+        //}
     }
 
     private void toChestButtonClick(){
