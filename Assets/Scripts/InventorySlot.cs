@@ -33,6 +33,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         toChestBtn.SetActive(false);
         manyToChestBtn.SetActive(false);
         toChestBtn.GetComponent<Button>().onClick.AddListener(toChestButtonClick);
+        manyToChestBtn.GetComponent<Button>().onClick.AddListener(manyToChestButtonClick);
         inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
 
     }
@@ -183,7 +184,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         
     }
 
-    public void SetItem(ItemData itemToAdd, item fullItem){
+    public void SetItem(ItemData itemToAdd, int itemQuantity){
     	if (itemToAdd == null){
         	itemIcon.sprite = null;
         	itemIcon.enabled = false;
@@ -196,7 +197,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	currentItem = itemToAdd;
     	itemIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     	//dropButton.gameObject.SetActive(true);
-    	quantity = fullItem.quantity;
+    	quantity = itemQuantity;
     	quantityText.text = quantity.ToString();
 	}
 
@@ -228,8 +229,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		return false;
 	}
 
-	public void stackItem(item fullItem){
-		quantity = fullItem.quantity + quantity;
+	public void stackItem(int itemQuantity){
+		quantity = itemQuantity + quantity;
 		quantityText.text = quantity.ToString();
 	}
 
@@ -307,6 +308,13 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             quantityText.text = quantity.ToString();
             inventoryManager.sendItem(currentItem, 1);
         }
+    }
+
+    private void manyToChestButtonClick(){
+        Debug.Log(quantity);
+        inventoryManager.sendItem(currentItem, quantity);
+        ClearSlot();
+        hiddeChestBtn();
     }
 
 }

@@ -99,32 +99,7 @@ public class chestManager : MonoBehaviour
             stackSlot.stackItem(quantity);
             return true;
         }
-        /*sInventorySlot stackSlot = GetStackSlot(newItem);
-        if(stackSlot == null){
-            sInventorySlot slot = GetEmptySlot();
-            if (slot != null){
-                slot.SetItem(newItem, fullItem);
-                return true;
-            }else{
-                Debug.Log("full inventory");
-                //this script could work as an Inventory Manager
-                InventorySlot stackInvSlot = GetInventoryStackSlot(newItem);
-                if(stackInvSlot == null){
-                    InventorySlot Slot = GetInventorySlot(newItem);
-                    if(Slot != null){
-                        Slot.SetItem(newItem, fullItem);
-                        return true;
-                    }
-                    return false;
-                }else{
-                    stackInvSlot.stackItem(fullItem);
-                    return true;
-                }
-            }
-        }else{
-            stackSlot.stackItem(fullItem);
-            return true;
-        }*/
+
     }
 
     public void changeOrder(int order){
@@ -133,6 +108,7 @@ public class chestManager : MonoBehaviour
     }
 
     public void sendItem(ItemData itemData, int quantity){
+        Debug.Log("quantity from chest manager sendItem: " + quantity);
         AddItem(itemData, quantity);
     }
  

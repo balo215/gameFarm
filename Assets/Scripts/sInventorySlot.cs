@@ -256,7 +256,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     	quantity = 0;
     }
 
-    public void SetItem(ItemData itemToAdd, item fullItem){
+    public void SetItem(ItemData itemToAdd, int itemQuantity){
     	if (itemToAdd == null){
         	itemIcon.sprite = null;
         	itemIcon.enabled = false;
@@ -268,12 +268,12 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     	itemIcon.enabled = true;
     	currentItem = itemToAdd;
     	//dropButton.gameObject.SetActive(true);
-    	quantity = fullItem.quantity;
+    	quantity = itemQuantity;
     	quantityText.text = quantity.ToString();
 	}
 
-	public void stackItem(item fullItem){
-		quantity = fullItem.quantity + quantity;
+	public void stackItem(int itemQuantity){
+		quantity = itemQuantity + quantity;
 		quantityText.text = quantity.ToString();
 	}
 

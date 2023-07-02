@@ -83,7 +83,7 @@ public class Character : MonoBehaviour
     	}
         item item = collision.gameObject.GetComponent<item>();
         if (item != null){
-            bool added = inventoryManager.AddItemToInv(item.GetItemData(), item);
+            bool added = inventoryManager.AddItemToInv(item.GetItemData(), item.quantity);
             if(added == true){
                 Destroy(collision.gameObject);
             }

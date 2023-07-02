@@ -20,6 +20,8 @@ public class chestSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public Transform parentBeforeDrag;
     public GameObject oneToInvBtn;
     public GameObject manyToInvBtn;
+    private InventoryManager inventoryManager;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +35,7 @@ public class chestSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         manyToInvBtn.SetActive(false);
         oneToInvBtn.GetComponent<Button>().onClick.AddListener(oneToInvButtonClick);
         manyToInvBtn.GetComponent<Button>().onClick.AddListener(manyToInvButtonClick);
+        inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
 
     }
 
@@ -242,7 +245,7 @@ public class chestSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void stackItem(int quantityP){
-        quantity++;
+        quantity = quantity + quantityP;
         quantityText.text = quantity.ToString();
     }
 
@@ -253,12 +256,32 @@ public class chestSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         return false;
     }
 
+    public void ClearSlot(){
+        itemIcon.sprite = null;
+        itemIcon.enabled = false;
+        currentItem = null;
+        //dropButton.gameObject.SetActive(false);
+        quantityText.text = "";
+        quantity = 0;
+        oneToInvBtn.SetActive(false);
+        manyToInvBtn.SetActive(false);
+    }
+
     public void oneToInvButtonClick(){
-        Debug.Log("one to inv button clicked, quantity: " + quantity);
+        if(quantity == 1){
+            inventoryManager.AddItemToInv(currentItem, 1);
+            ClearSlot();
+        }
+        if(quantity > 1){
+            inventoryManager.AddItemToInv(currentItem, 1);
+            quantity--;
+            quantityText.text = quantity.ToString();
+        }
     }
 
     public void manyToInvButtonClick(){
-        Debug.Log("many to inv button clicked");
+        inventoryManager.AddItemToInv(currentItem, quantity);
+        ClearSlot();
     }
 
 }

@@ -49,50 +49,20 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    /*
-    public bool AddItem(ItemData newItem, item fullItem){
-        sInventorySlot stackSlot = GetStackSlot(newItem);
-        if(stackSlot == null){
-            sInventorySlot slot = GetEmptySlot();
-            if (slot != null){
-                slot.SetItem(newItem, fullItem);
-                return true;
-            }else{
-                Debug.Log("full inventory");
-                //this script could work as an Inventory Manager
-                InventorySlot stackInvSlot = GetInventoryStackSlot(newItem);
-                if(stackInvSlot == null){
-                	InventorySlot Slot = GetInventorySlot(newItem);
-	                if(Slot != null){
-	                    Slot.SetItem(newItem, fullItem);
-	                    return true;
-	                }
-                	return false;
-                }else{
-                	stackInvSlot.stackItem(fullItem);
-                	return true;
-                }
-            }
-        }else{
-            stackSlot.stackItem(fullItem);
-            return true;
-        }
-    }
-*/
-    public bool AddItemToInv(ItemData newItem, item fullItem){
+
+    public bool AddItemToInv(ItemData newItem, int itemQuantity){
     	sInventorySlot stackSmallSlot = GetStackSlot(newItem);
     	InventorySlot stackSlot = GetInventoryStackSlot(newItem);
     	if(stackSmallSlot == null && stackSlot == null){
     		//add in an empty slot
     		sInventorySlot slot = GetEmptySlot();
     		if(slot != null){
-    			slot.SetItem(newItem, fullItem);
+    			slot.SetItem(newItem, itemQuantity);
     			return true;
     		}else{
     			InventorySlot invSlot = GetInventorySlot(newItem);
     			if(invSlot != null){
-    				invSlot.SetItem(newItem, fullItem);
+    				invSlot.SetItem(newItem, itemQuantity);
     				return true;
     			}else{
     				Debug.Log("full inventory");
@@ -100,10 +70,10 @@ public class InventoryManager : MonoBehaviour
     			}
     		}
     	}else if(stackSmallSlot != null){
-    		stackSmallSlot.stackItem(fullItem);
+    		stackSmallSlot.stackItem(itemQuantity);
     		return true;
     	}else if(stackSlot != null){
-    		stackSlot.stackItem(fullItem);
+    		stackSlot.stackItem(itemQuantity);
     		return true;
     	}else{
     		return false;
