@@ -5,31 +5,19 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class InventoryManager : MonoBehaviour, IPointerClickHandler
+public class InventoryManager : MonoBehaviour
 {
 	public List<sInventorySlot> slots;
     public List<InventorySlot> iSlots;
     public GameObject inventoryPanel;
     public bool isInventoryOpen = false;
     public bool isChestOpen = false;
+    public chestManager ChestManager;
 // https://chat.openai.com/share/a14ba7f2-c3be-4e8c-ab86-bd0e39e7b10e
 
     void Start()
     {
     	inventoryPanel.SetActive(false);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-    	    	Debug.Log(eventData);
-
-        if (eventData.button == PointerEventData.InputButton.Left && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
-        {
-            GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
-
-            // Perform actions based on the clicked UI object while Shift key is pressed
-            Debug.Log("Shift + Clicked on UI: " + clickedObject.name);
-        }
     }
 
     void Update(){
@@ -157,6 +145,14 @@ public class InventoryManager : MonoBehaviour, IPointerClickHandler
             }
         }
         return null;
+    }
+
+   public void sendItem(ItemData itemData, int quantity){
+        ChestManager.sendItem(itemData, quantity);
+    }
+
+    public void setChestManager(chestManager CM){
+        ChestManager = CM;
     }
 
 

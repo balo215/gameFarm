@@ -8,6 +8,7 @@ public class ItemBehaviorManager : MonoBehaviour
     private static ItemBehaviorManager instance;
     public GameObject inventoryPanel;
     public GameObject backgroundInventory;
+    public Transform character;
 
     private void Awake()
     {
@@ -32,7 +33,7 @@ public class ItemBehaviorManager : MonoBehaviour
         }
     }
     public void spawnItem(){
-        Vector2 spawnPosition = new Vector2(-1f, 0f); 
+        Vector2 spawnPosition = new Vector2(character.position.x+1f, character.position.y+1f); 
         Debug.Log(chestPrefab);
         GameObject chest = Instantiate(chestPrefab, spawnPosition, Quaternion.identity);
         chest.transform.SetAsLastSibling();

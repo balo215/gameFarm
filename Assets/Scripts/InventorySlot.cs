@@ -18,6 +18,9 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private CanvasGroup canvasGroup;
     public Transform parentBeforeDrag;
     public GameObject toChestBtn;
+    public GameObject manyToChestBtn;
+    private InventoryManager inventoryManager;
+
 
 
     // Start is called before the first frame update
@@ -28,7 +31,9 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	quantityText.text = "";
     	canvasGroup = GetComponent<CanvasGroup>();
         toChestBtn.SetActive(false);
+        manyToChestBtn.SetActive(false);
         toChestBtn.GetComponent<Button>().onClick.AddListener(toChestButtonClick);
+        inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
 
     }
 
@@ -234,7 +239,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	slotToEmpty.itemIcon.sprite = null;
     	//slotToEmpty.dropButton.gameObject.SetActive(false);
         slotToEmpty.toChestBtn.gameObject.SetActive(false);
-
+        slotToEmpty.manyToChestBtn.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -247,6 +252,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     	slotToEmpty.itemIcon.sprite = null;
     	slotToEmpty.dropButton.gameObject.SetActive(false);
         slotToEmpty.toChestBtn.gameObject.SetActive(false);
+        slotToEmpty.manyToChestBtn.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -257,7 +263,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         chestSlot slotToEmpty = slot.GetComponent<chestSlot>();
         Transform slotTransform = slot.GetComponent<Transform>();
         slotToEmpty.itemIcon.sprite = null;
-        
+        slotToEmpty.oneToInvBtn.SetActive(false);
+        slotToEmpty.manyToInvBtn.SetActive(false);
         //slotToEmpty.toChestBtn.gameObject.SetActive(false);
         slotToEmpty.currentItem = null;
         //slotToEmpty.Item = null;
@@ -268,17 +275,38 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void showChestBtn(){
         if(currentItem != null){
             toChestBtn.SetActive(true);
+            manyToChestBtn.SetActive(true);
         }
     }
 
     public void hiddeChestBtn(){
         //if(currentItem != null){
             toChestBtn.SetActive(false);
+            manyToChestBtn.SetActive(false);
         //}
     }
 
+    public void ClearSlot(){
+        itemIcon.sprite = null;
+        itemIcon.enabled = false;
+        currentItem = null;
+        //dropButton.gameObject.SetActive(false);
+        Item = null;
+        quantityText.text = "";
+        quantity = 0;
+    }
+
     private void toChestButtonClick(){
-        Debug.Log(currentItem);
+        if(quantity == 1){
+            inventoryManager.sendItem(currentItem, 1);
+            ClearSlot();
+            hiddeChestBtn();
+        }
+        if(quantity >= 2){
+            quantity--;
+            quantityText.text = quantity.ToString();
+            inventoryManager.sendItem(currentItem, 1);
+        }
     }
 
 }

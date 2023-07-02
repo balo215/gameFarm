@@ -15,6 +15,7 @@ public class chestManager : MonoBehaviour
     public Canvas canvas;
 
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,11 +37,10 @@ public class chestManager : MonoBehaviour
         if (Input.GetKeyDown("e"))
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, -transform.up, 1f, layerMask);
-            if (hit.collider != null)
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    Debug.Log("opening chest after collision");
+            if (hit.collider != null){
+                if (hit.collider.CompareTag("Player")){
+                    inventoryManager.setChestManager(this);
+                    
                     if (inventoryManager.isInventoryOpen == true && inventoryManager.isChestOpen == true)
                     {
                         inventoryManager.isChestOpen = false;
@@ -85,8 +85,64 @@ public class chestManager : MonoBehaviour
         return null;
     }
 
+    public bool AddItem(ItemData newItem, int quantity){
+        chestSlot stackSlot = GetStackSlot(newItem);
+        if(stackSlot == null){
+            chestSlot slot = GetEmptySlot();
+            if(slot != null){
+                slot.SetItem(newItem, quantity);
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            stackSlot.stackItem(quantity);
+            return true;
+        }
+        /*sInventorySlot stackSlot = GetStackSlot(newItem);
+        if(stackSlot == null){
+            sInventorySlot slot = GetEmptySlot();
+            if (slot != null){
+                slot.SetItem(newItem, fullItem);
+                return true;
+            }else{
+                Debug.Log("full inventory");
+                //this script could work as an Inventory Manager
+                InventorySlot stackInvSlot = GetInventoryStackSlot(newItem);
+                if(stackInvSlot == null){
+                    InventorySlot Slot = GetInventorySlot(newItem);
+                    if(Slot != null){
+                        Slot.SetItem(newItem, fullItem);
+                        return true;
+                    }
+                    return false;
+                }else{
+                    stackInvSlot.stackItem(fullItem);
+                    return true;
+                }
+            }
+        }else{
+            stackSlot.stackItem(fullItem);
+            return true;
+        }*/
+    }
+
     public void changeOrder(int order){
         Debug.Log("changing order");
         canvas.sortingOrder = order;
     }
+
+    public void sendItem(ItemData itemData, int quantity){
+        AddItem(itemData, quantity);
+    }
+ 
+    private chestSlot GetStackSlot(ItemData newItem){
+        foreach (chestSlot slot in slots){
+            if(!slot.IsEmpty() && slot.isStackable(newItem)){
+                return slot;
+            }
+        }
+        return null;
+    }
+
 }

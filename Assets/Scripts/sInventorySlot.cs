@@ -20,29 +20,36 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 	public Character character;
 	public GameObject pausedBackground;
     public GameObject toChestBtn;
+    public GameObject manyToChestBtn;
 
 
     public static GameObject itemBeingDragged;
     public GameObject duplicateItem;
     private CanvasGroup canvasGroup;
-
+    private InventoryManager inventoryManager;
 
     public Transform parentBeforeDrag;
    
     private void Start(){
     	dropButton.onClick.AddListener(dropButtonClick);
     	toChestBtn.GetComponent<Button>().onClick.AddListener(toChestButtonClick);
+        manyToChestBtn.GetComponent<Button>().onClick.AddListener(manyToChestButtonClick);
+    	dropButton.gameObject.SetActive(false);
+    	toChestBtn.SetActive(false);
+        manyToChestBtn.SetActive(false);
     	itemIcon.sprite = null;
     	itemIcon.enabled = false;
-    	dropButton.gameObject.SetActive(false);
     	quantityText.text = "";
     	usable = true;
     	canvasGroup = GetComponent<CanvasGroup>();
-    	toChestBtn.SetActive(false);
+        inventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
 
     }
 	
     public void OnBeginDrag(PointerEventData eventData){
+        if(Input.GetKey(KeyCode.LeftControl) && currentItem != null){
+            Debug.Log(itemIcon);
+        }
     	if(currentItem != null){
 	    	canvasGroup.blocksRaycasts = false;
 	    	canvasGroup.alpha = .5f;
@@ -51,6 +58,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             eventData.pointerDrag.GetComponent<Transform>().parent.parent.parent.GetComponent<Canvas>().sortingOrder = 1;
 
     	    this.toChestBtn.SetActive(false);
+            this.manyToChestBtn.SetActive(false);
 	    	parentBeforeDrag = eventData.pointerDrag.GetComponent<Transform>().parent;
 	    	indexSlot = eventData.pointerDrag.GetComponent<Transform>().GetSiblingIndex();
 	    	eventData.pointerDrag.GetComponent<Transform>().SetParent(eventData.pointerDrag.GetComponent<Transform>().parent.parent.parent);
@@ -204,6 +212,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     	slotToEmpty.itemIcon.sprite = null;
     	slotToEmpty.dropButton.gameObject.SetActive(false);
         slotToEmpty.toChestBtn.gameObject.SetActive(false);
+        slotToEmpty.manyToChestBtn.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -216,6 +225,7 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     	slotToEmpty.itemIcon.sprite = null;
     	//slotToEmpty.dropButton.gameObject.SetActive(false);
         slotToEmpty.toChestBtn.gameObject.SetActive(false);
+        slotToEmpty.manyToChestBtn.gameObject.SetActive(false);
     	slotToEmpty.currentItem = null;
     	slotToEmpty.Item = null;
     	slotToEmpty.quantityText.text = "";
@@ -228,6 +238,8 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         slotToEmpty.itemIcon.sprite = null;
         
         //slotToEmpty.toChestBtn.gameObject.SetActive(false);
+        slotToEmpty.oneToInvBtn.SetActive(false);
+        slotToEmpty.manyToInvBtn.SetActive(false);
         slotToEmpty.currentItem = null;
         //slotToEmpty.Item = null;
         slotToEmpty.quantityText.text = "";
@@ -292,20 +304,15 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void useButtonKey()
     {
         //Debug.Log(pausedBackground.activeSelf);
-        if (!pausedBackground.activeSelf)
-        {
-            if (currentItem != null)
-            {
+        if (!pausedBackground.activeSelf){
+            if (currentItem != null){
                 //Debug.Log(currentItem);
                 ItemBehaviorManager.Use(currentItem);
-                if (currentItem.DOU)
-                {
-                    if (quantity == 1)
-                    {
+                if (currentItem.DOU){
+                    if (quantity == 1){
                         ClearSlot();
                     }
-                    else
-                    {
+                    else{
                         quantity--;
                         quantityText.text = quantity.ToString();
                     }
@@ -317,18 +324,37 @@ public class sInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void showChestBtn(){
     	if(currentItem != null){
     		toChestBtn.SetActive(true);
+            manyToChestBtn.SetActive(true);
     	}
     }
 
     public void hiddeChestBtn(){
     	//if(currentItem != null){
     		toChestBtn.SetActive(false);
+            manyToChestBtn.SetActive(false);
     	//}
     }
 
 	private void toChestButtonClick(){
-		Debug.Log(currentItem);
+        if(quantity == 1){
+            inventoryManager.sendItem(currentItem, 1);
+            ClearSlot();
+            hideDropBtn();
+            hiddeChestBtn();
+        }
+        if(quantity >= 2){
+            quantity--;
+            quantityText.text = quantity.ToString();
+            inventoryManager.sendItem(currentItem, 1);
+        }
 	}
+
+    private void manyToChestButtonClick(){
+        inventoryManager.sendItem(currentItem, quantity);
+        ClearSlot();
+        hideDropBtn();
+        hiddeChestBtn();
+    }
 
     public void showDropBtn(){
         if(currentItem != null){
